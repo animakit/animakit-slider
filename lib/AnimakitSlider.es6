@@ -34,6 +34,13 @@ export default class AnimakitSlider extends AnimakitBase {
     height:       null,
   };
 
+  init() {
+    this.slidesNodes      = [];
+    this.slidesDimensions = [];
+
+    this.contentMounted = false;
+  }
+
   getChildrenCount(children) {
     const length = Array.isArray(children) ? children.length : 1;
 
@@ -269,13 +276,6 @@ export default class AnimakitSlider extends AnimakitBase {
     return { position, float, width, height };
   }
 
-  init() {
-    this.slidesNodes      = [];
-    this.slidesDimensions = [];
-
-    this.contentMounted = false;
-  }
-
   calcDimensions() {
     let maxWidth  = 0;
     let maxHeight = 0;
@@ -293,8 +293,11 @@ export default class AnimakitSlider extends AnimakitBase {
         const node = this.slidesNodes[num];
 
         if (node) {
-          width  = node.offsetWidth;
-          height = node.offsetHeight;
+          // width  = node.offsetWidth;
+          // height = node.offsetHeight;
+          const rect = node.getBoundingClientRect();
+          width = Math.ceil(rect.width);
+          height = Math.ceil(rect.height);
         }
 
         this.slidesDimensions[num] = { width, height };
