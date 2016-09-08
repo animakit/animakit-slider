@@ -1,6 +1,6 @@
 {
   "name": "animakit-slider",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "AnimakitSlider - React component for the blocks sliding",
   "main": "index.js",
   "files": [
