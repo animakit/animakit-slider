@@ -4,3 +4,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ##0.0.1
 * Fix fractional size bug
+
+##0.0.2
+* Update dependencies
