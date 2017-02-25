@@ -1,0 +1,138 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AnimakitSlider /> should render 1`] = `
+ShallowWrapper {
+  "complexSelector": ComplexSelector {
+    "buildPredicate": [Function],
+    "childrenOfNode": [Function],
+    "findWhereUnwrapped": [Function],
+  },
+  "length": 1,
+  "node": <div
+    style={Object {}}
+>
+    <div
+        style={Object {}}
+    >
+        
+    </div>
+</div>,
+  "nodes": Array [
+    <div
+      style={Object {}}
+>
+      <div
+            style={Object {}}
+      >
+            
+      </div>
+</div>,
+  ],
+  "options": Object {},
+  "renderer": ReactShallowRenderer {
+    "_instance":  {
+      "_calledComponentWillUnmount": false,
+      "_compositeType": 0,
+      "_context": Object {},
+      "_currentElement": <AnimakitBase
+        duration={500}
+        easing="cubic-bezier(.165,.84,.44,1)"
+        flexible={false}
+        loop={false}
+        side={0}
+        skip={false}
+        vertical={false}
+/>,
+      "_debugID": 1,
+      "_hostContainerInfo": null,
+      "_hostParent": null,
+      "_instance": AnimakitSlider {
+        "_reactInternalInstance": [Circular],
+        "animationResetTO": null,
+        "changingProps": Array [],
+        "contentMounted": false,
+        "context": Object {},
+        "listeners": Object {
+          "checkResize": [Function],
+        },
+        "props": Object {
+          "duration": 500,
+          "easing": "cubic-bezier(.165,.84,.44,1)",
+          "flexible": false,
+          "loop": false,
+          "side": 0,
+          "skip": false,
+          "vertical": false,
+        },
+        "refs": Object {},
+        "resizeCheckerRAF": null,
+        "slidesDimensions": Array [],
+        "slidesNodes": Array [],
+        "state": Object {
+          "animation": false,
+          "currentSlide": 0,
+          "height": null,
+          "prevSlide": -1,
+          "slidesCount": 0,
+          "width": null,
+        },
+        "updater": Object {
+          "enqueueCallback": [Function],
+          "enqueueCallbackInternal": [Function],
+          "enqueueElementInternal": [Function],
+          "enqueueForceUpdate": [Function],
+          "enqueueReplaceState": [Function],
+          "enqueueSetState": [Function],
+          "isMounted": [Function],
+          "validateCallback": [Function],
+        },
+        "useWinResize": false,
+      },
+      "_mountOrder": 1,
+      "_pendingCallbacks": null,
+      "_pendingElement": null,
+      "_pendingForceUpdate": false,
+      "_pendingReplaceState": false,
+      "_pendingStateQueue": null,
+      "_renderedComponent": NoopInternalComponent {
+        "_currentElement": <div
+          style={Object {}}
+>
+          <div
+                    style={Object {}}
+          >
+                    
+          </div>
+</div>,
+        "_debugID": 2,
+        "_renderedOutput": <div
+          style={Object {}}
+>
+          <div
+                    style={Object {}}
+          >
+                    
+          </div>
+</div>,
+      },
+      "_renderedNodeType": 0,
+      "_rootNodeID": 0,
+      "_topLevelWrapper": null,
+      "_updateBatchNumber": null,
+      "_warnedAboutRefsInRender": false,
+    },
+    "getRenderOutput": [Function],
+    "render": [Function],
+  },
+  "root": [Circular],
+  "unrendered": <AnimakitBase
+    duration={500}
+    easing="cubic-bezier(.165,.84,.44,1)"
+    flexible={false}
+    loop={false}
+    side={0}
+    skip={false}
+    vertical={false}
+/>,
+}
+`;
