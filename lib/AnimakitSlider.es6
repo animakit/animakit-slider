@@ -4,35 +4,18 @@ import AnimakitBase from 'animakit-core';
 import styles       from './styles';
 
 export default class AnimakitSlider extends AnimakitBase {
-  static propTypes = {
-    children: React.PropTypes.any,
-    slide:    React.PropTypes.any,
-    vertical: React.PropTypes.bool,
-    loop:     React.PropTypes.bool,
-    skip:     React.PropTypes.bool,
-    flexible: React.PropTypes.bool,
-    duration: React.PropTypes.number,
-    easing:   React.PropTypes.string,
-  };
+  constructor(props) {
+    super(props);
 
-  static defaultProps = {
-    side:     0,
-    vertical: false,
-    loop:     false,
-    skip:     false,
-    flexible: false,
-    duration: 500,
-    easing:   'cubic-bezier(.165,.84,.44,1)',
-  };
-
-  state = {
-    animation:    false,
-    prevSlide:    -1,
-    currentSlide: 0,
-    slidesCount:  0,
-    width:        null,
-    height:       null,
-  };
+    this.state = {
+      animation:    false,
+      prevSlide:    -1,
+      currentSlide: 0,
+      slidesCount:  0,
+      width:        null,
+      height:       null,
+    };
+  }
 
   init() {
     this.slidesNodes      = [];
@@ -429,3 +412,24 @@ export default class AnimakitSlider extends AnimakitBase {
     );
   }
 }
+
+AnimakitSlider.propTypes = {
+  children: React.PropTypes.any,
+  slide:    React.PropTypes.any,
+  vertical: React.PropTypes.bool,
+  loop:     React.PropTypes.bool,
+  skip:     React.PropTypes.bool,
+  flexible: React.PropTypes.bool,
+  duration: React.PropTypes.number,
+  easing:   React.PropTypes.string,
+};
+
+AnimakitSlider.defaultProps = {
+  side:     0,
+  vertical: false,
+  loop:     false,
+  skip:     false,
+  flexible: false,
+  duration: 500,
+  easing:   'cubic-bezier(.165,.84,.44,1)',
+};
