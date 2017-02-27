@@ -6,10 +6,10 @@ Supports both horizontal and vertical modes and the ability to loop and skip sli
 ## Usage
 
 ```javascript
-<AnimakitSlider slide = { this.state.index }>
-  <div className="slide"><img src="/img/photo1.jpg" /></div>
-  <div className="slide"><img src="/img/photo2.jpg" /></div>
-  <div className="slide"><img src="/img/photo3.jpg" /></div>
+<AnimakitSlider slide={this.state.index}>
+  <Slide />
+  <Slide />
+  <Slide />
 </AnimakitSlider>
 ```
 
