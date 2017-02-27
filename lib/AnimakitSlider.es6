@@ -1,27 +1,121 @@
-import React        from 'react';
-import AnimakitBase from 'animakit-core';
+import React, { Component, PropTypes } from 'react';
 
-import styles       from './styles';
+import { isEqual, transitionEventName } from './utils';
 
-export default class AnimakitSlider extends AnimakitBase {
+import styles from './styles';
+
+export default class AnimakitSlider extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      animation:    false,
-      prevSlide:    -1,
+      animation: false,
+
+      prevSlide: -1,
       currentSlide: 0,
-      slidesCount:  0,
-      width:        null,
-      height:       null,
+      slidesCount: 0,
+
+      width: null,
+      height: null,
     };
   }
 
-  init() {
-    this.slidesNodes      = [];
+  componentWillMount() {
+    this.rootNode = [];
+    this.slidesNodes = [];
     this.slidesDimensions = [];
 
     this.contentMounted = false;
+
+    this.transitionEventName = transitionEventName();
+
+    this.listeners = this.getListeners();
+
+    this.animationReset = false;
+    this.animationResetTO = null;
+    this.resizeCheckerRAF = null;
+  }
+
+  componentDidMount() {
+    this.repaint(this.props);
+
+    this.toggleAnimationListener(true);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.repaint(nextProps);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    const stateChanged = !isEqual(nextState, this.state);
+
+    const childrenChanged = !isEqual(nextProps.children, this.props.children);
+
+    return stateChanged || childrenChanged;
+  }
+
+  componentWillUpdate() {
+    this.toggleResizeChecker(false);
+  }
+
+  componentDidUpdate() {
+    this.toggleResizeChecker(true);
+  }
+
+  componentWillUnmount() {
+    this.toggleResizeChecker(false);
+    this.toggleAnimationReset(false);
+    this.toggleAnimationListener(false);
+  }
+
+  getListeners() {
+    return {
+      onCheckResize: this.onCheckResize.bind(this),
+      onTransitionEnd: this.onTransitionEnd.bind(this),
+    };
+  }
+
+  toggleResizeChecker(start) {
+    if (typeof requestAnimationFrame === 'undefined') return;
+
+    if (start) {
+      this.resizeCheckerRAF = requestAnimationFrame(this.listeners.onCheckResize);
+    } else if (this.resizeCheckerRAF) {
+      cancelAnimationFrame(this.resizeCheckerRAF);
+    }
+  }
+
+  toggleAnimationReset(add) {
+    if (this.animationResetTO) clearTimeout(this.animationResetTO);
+
+    if (add) {
+      this.animationResetTO = setTimeout(() => {
+        this.animationReset = true;
+      }, this.props.duration);
+    } else {
+      this.animationReset = false;
+    }
+  }
+
+  toggleAnimationListener(add) {
+    const method = add ? 'addEventListener' : 'removeEventListener';
+    this.rootNode[method](this.transitionEventName, this.listeners.onTransitionEnd, false);
+  }
+
+  onTransitionEnd() {
+    if (!this.animationReset) return;
+
+    this.setState({
+      animation: false,
+    });
+  }
+
+  onCheckResize() {
+    this.toggleResizeChecker(false);
+
+    this.softRepaint();
+
+    this.toggleResizeChecker(true);
   }
 
   getChildrenCount(children) {
@@ -166,10 +260,12 @@ export default class AnimakitSlider extends AnimakitBase {
     width = 0;
     height = 0;
 
-    const num = this.state.animation ? this.state.prevSlide : this.state.currentSlide;
+    const { animation, prevSlide, currentSlide } = this.state;
+
+    const num = animation ? prevSlide : currentSlide;
 
     if (this.slidesDimensions[num]) {
-      width  = this.slidesDimensions[num].width;
+      width = this.slidesDimensions[num].width;
       height = this.slidesDimensions[num].height;
     }
 
@@ -244,7 +340,8 @@ export default class AnimakitSlider extends AnimakitBase {
 
     const direction = this.getDirection();
 
-    const appendMargin = skip && slidesCount > 2 && (!animation || (direction && num === prevSlide));
+    const appendMargin = skip && slidesCount > 2 &&
+                         (!animation || (direction && num === prevSlide));
 
     if (vertical) {
       if (appendMargin) {
@@ -267,15 +364,15 @@ export default class AnimakitSlider extends AnimakitBase {
   }
 
   calcDimensions() {
-    let maxWidth  = 0;
+    let maxWidth = 0;
     let maxHeight = 0;
 
     React.Children.map(this.props.children, (child, num) => {
-      let width  = 0;
+      let width = 0;
       let height = 0;
 
       if (this.slidesDimensions[num]) {
-        width  = this.slidesDimensions[num].width;
+        width = this.slidesDimensions[num].width;
         height = this.slidesDimensions[num].height;
       }
 
@@ -283,17 +380,17 @@ export default class AnimakitSlider extends AnimakitBase {
         const node = this.slidesNodes[num];
 
         if (node) {
-          // width  = node.offsetWidth;
-          // height = node.offsetHeight;
-          const rect = node.getBoundingClientRect();
-          width = Math.ceil(rect.width);
-          height = Math.ceil(rect.height);
+          const newWidth = node.offsetWidth;
+          const newHeight = node.offsetHeight;
+
+          width = (Math.abs(newWidth - width) <= 1) ? width : newWidth;
+          height = (Math.abs(newHeight - height) <= 1) ? height : newHeight;
         }
 
         this.slidesDimensions[num] = { width, height };
       }
 
-      if (width > maxWidth)   maxWidth  = width;
+      if (width > maxWidth) maxWidth = width;
       if (height > maxHeight) maxHeight = height;
     });
 
@@ -322,7 +419,7 @@ export default class AnimakitSlider extends AnimakitBase {
   resetDimensionsState(stateChunk) {
     const { width, height } = stateChunk;
 
-    if (width  === this.state.width &&
+    if (width === this.state.width &&
         height === this.state.height) {
       return {};
     }
@@ -342,8 +439,8 @@ export default class AnimakitSlider extends AnimakitBase {
     const slidesCount = this.getChildrenCount(props.children);
 
     const [width, height] = this.calcDimensions();
-    const nextSlide       = this.getSlideNum(props.slide);
-    const currentSlide    = nextSlide < slidesCount ? nextSlide : slidesCount - 1;
+    const nextSlide = this.getSlideNum(props.slide);
+    const currentSlide = nextSlide < slidesCount ? nextSlide : slidesCount - 1;
 
     const state = Object.assign(
       {},
@@ -358,16 +455,20 @@ export default class AnimakitSlider extends AnimakitBase {
       }, 1);
     }
 
+    this.applyState(state);
+  }
+
+  applyState(state) {
     if (!Object.keys(state).length) return;
 
     if (state.animation) {
-      this.cancelAnimationReset();
+      this.toggleAnimationReset(false);
     }
 
     this.setState(state);
 
     if (state.animation) {
-      this.startAnimationReset();
+      this.toggleAnimationReset(true);
     }
   }
 
@@ -376,12 +477,12 @@ export default class AnimakitSlider extends AnimakitBase {
 
     return (
       <div
-        key = { num }
-        style = { slideVisible ? this.getSlideStyles(num) : null }
+        key={ num }
+        style={ slideVisible ? this.getSlideStyles(num) : null }
       >
         <div
-          style = { slideVisible ? styles.slideWrapper : null }
-          ref = { (c) => { this.slidesNodes[num] = c; } }
+          style={ slideVisible ? styles.slideWrapper : null }
+          ref={ (c) => { this.slidesNodes[num] = c; } }
         >
           { this.getChildVisibility(num) ? child : null }
         </div>
@@ -401,11 +502,11 @@ export default class AnimakitSlider extends AnimakitBase {
 
   render() {
     return (
-      <div style = { this.getRootStyles() }>
-        <div
-          style = { this.getContainerStyles() }
-          ref = {(c) => { this.container = c; }}
-        >
+      <div
+        style={ this.getRootStyles() }
+        ref={(c) => { this.rootNode = c; }}
+      >
+        <div style={ this.getContainerStyles() }>
         { this.renderChildren() }
         </div>
       </div>
@@ -414,22 +515,22 @@ export default class AnimakitSlider extends AnimakitBase {
 }
 
 AnimakitSlider.propTypes = {
-  children: React.PropTypes.any,
-  slide:    React.PropTypes.any,
-  vertical: React.PropTypes.bool,
-  loop:     React.PropTypes.bool,
-  skip:     React.PropTypes.bool,
-  flexible: React.PropTypes.bool,
-  duration: React.PropTypes.number,
-  easing:   React.PropTypes.string,
+  children: PropTypes.any,
+  slide: PropTypes.any,
+  vertical: PropTypes.bool,
+  loop: PropTypes.bool,
+  skip: PropTypes.bool,
+  flexible: PropTypes.bool,
+  duration: PropTypes.number,
+  easing: PropTypes.string,
 };
 
 AnimakitSlider.defaultProps = {
-  side:     0,
+  side: 0,
   vertical: false,
-  loop:     false,
-  skip:     false,
+  loop: false,
+  skip: false,
   flexible: false,
   duration: 500,
-  easing:   'cubic-bezier(.165,.84,.44,1)',
+  easing: 'cubic-bezier(.165,.84,.44,1)',
 };
