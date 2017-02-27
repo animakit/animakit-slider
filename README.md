@@ -31,7 +31,7 @@ npm install animakit-slider
 | skip | false | bool | `false` | `true`, `false` | If true, the component will animate directly to the selected slide and will not show the slides located between |
 | flexible | false | bool | `false` | `true`, `false` | If true, the component size automatically to fit the current slide. By default, the component selects the size of the largest slide. |
 | duration | false | number | `500` | Any integer number | Duration of animation |
-| easing | false | string | `cubic-bezier(.165, .84, .44, 1)` | Any [easing function](http://easings.net/) | Easing function of animation |
+| easing | false | string | `cubic-bezier (.165,.84,.44,1)` | Any [easing function](http://easings.net/) | Easing function of animation |
 
 
 ## Origin
