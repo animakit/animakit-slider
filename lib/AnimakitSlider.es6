@@ -19,6 +19,8 @@ export default class AnimakitSlider extends Component {
       width: null,
       height: null,
     };
+
+    this.setRootNode = this.setRootNode.bind(this);
   }
 
   componentWillMount() {
@@ -501,11 +503,15 @@ export default class AnimakitSlider extends Component {
     });
   }
 
+  setRootNode(c) {
+    this.rootNode = c;
+  }
+
   render() {
     return (
       <div
         style={ this.getRootStyles() }
-        ref={(c) => { this.rootNode = c; }}
+        ref={ this.setRootNode }
       >
         <div style={ this.getContainerStyles() }>
         { this.renderChildren() }
