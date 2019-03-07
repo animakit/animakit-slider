@@ -1,5 +1,8 @@
 # AnimakitSlider
 
+**WARNING:** Currently unmaintained because of lack of interest, activity and resources
+
+
 React component for the blocks sliding.
 Supports both horizontal and vertical modes and the ability to loop and skip slides during animation.
 
